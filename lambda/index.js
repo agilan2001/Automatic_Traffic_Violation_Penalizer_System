@@ -32,7 +32,7 @@ exports.handler = async (event) => {
     var violation_place = body.violation_place;
     var violation_time = body.violation_time;
 
-    db.ref("messages").push(body);
+    
     var snap = await db.ref(`details/${lic_num}/mail`).once("value");
     var mail_id = snap.val();
 
