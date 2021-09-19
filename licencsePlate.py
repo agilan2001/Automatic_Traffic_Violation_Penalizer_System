@@ -2,10 +2,13 @@ import cv2
 import imutils
 import numpy as np
 import pytesseract
+import requests
+import datetime
+
 pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe"
 
 # Image Extraction
-img = cv2.imread(r'D:\Agilan\VII Sem\MiniProj\Code\test_images\test4.jpg')
+img = cv2.imread(r'D:\Agilan\VII Sem\MiniProj\Code\test_images\test1.jpg')
 img = cv2.resize(img, (600,400) )
 
 
@@ -60,13 +63,20 @@ if detected == 1:
     text = pytesseract.image_to_string(Cropped, config=r'bazaar --psm 8')
     fill_text = "".join(e for e in text if e.isalnum() )
     print("Detected license plate Number is:",fill_text)
-    
+
     
     img = cv2.resize(img,(500,300))
     Cropped = cv2.resize(Cropped,(400,200))
     
     cv2.imshow('car',img)
     cv2.imshow('Cropped',Cropped)
+
+    
+    # Mail Notification Trial
+    r = requests.post(url = "https://kntiyj4c51.execute-api.us-east-2.amazonaws.com/default/traffic-penalizer-notification", 
+        json = {'lic_num': fill_text, 'violation_place': 'Tambaram', 'violation_time': datetime.datetime.now().isoformat() }) 
+    print(r.text)
+    
 
     cv2.waitKey(0)
     cv2.destroyAllWindows()
